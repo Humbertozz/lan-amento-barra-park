@@ -111,8 +111,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .close{all:unset;cursor:pointer;width:34px;height:34px;border-radius:50%;display:none;place-items:center;border:1px solid var(--stroke)}
 .close svg{width:12px;height:12px;stroke:#fff;stroke-width:1.8}
 .panel{width:400px}
-.panel .fine{margin-top:0}
-@media (max-width:1100px){.panel{width:auto}}
+.fwrap{position:relative;margin:4px -24px -24px;background:#fff;border-radius:0 0 22px 22px;overflow:hidden;height:470px}
+.fwrap::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--gold),#C9B814);z-index:2}
+.fwrap .ftop{position:relative;z-index:1;display:flex;align-items:center;gap:10px;padding:18px 24px 0;color:#1d1f0a;font-size:13px;font-weight:600}
+.fwrap .ftop i{width:22px;height:22px;border-radius:50%;background:#1d1f0a;color:var(--gold);display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:700;flex:none}
+.fwrap iframe{position:absolute;left:0;top:-38px;width:100%;height:620px;border:0;display:block}
+.fwrap .fshield{position:absolute;left:0;right:0;top:0;height:58px;background:#fff;z-index:1;pointer-events:none}
+.panel .fine{margin-top:-4px}
+@media (max-width:1100px){.panel{width:auto}.fwrap{margin:4px calc(-1*max(20px,env(safe-area-inset-left,0px))) 0;border-radius:0;height:500px}.panel .fine{margin-top:-4px}.fwrap{margin-bottom:calc(-1*max(22px,calc(env(safe-area-inset-bottom,0px) + 16px)))}}
 .fine{font-size:11px;color:rgba(255,255,255,.5);line-height:1.4}
 .scrim{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .4s}
 .mcta{display:none}
@@ -212,16 +218,7 @@ footer b{color:#E8E3CC;font-weight:600}
     </div>
     <div class="chips"><span class="chip">R$ 599/mês*</span><span class="chip">96x sem juros*</span><span class="chip">A partir de 160 m²</span></div>
     <div class="fine">*Correção anual pelo IPCA. Desconto válido até 31/12/2026. Imagens ilustrativas.</div>
-    <form id="Lead_Barra_Park" name="Lead_Barra_Park" method="post" novalidate style="display:grid;gap:12px">
-      <input type="text" id="site" name="site" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-      <div class="f"><label for="nome">Nome</label><input id="nome" name="nome" type="text" autocomplete="name" placeholder="Nome e sobrenome"><div class="err" id="e-nome"></div></div>
-      <div class="f"><label for="email">E-mail</label><input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="seu@email.com"><div class="err" id="e-email"></div></div>
-      <div class="f"><label for="tel">WhatsApp</label><input id="tel" name="telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(79) 99999-9999"><div class="err" id="e-tel"></div></div>
-      <label class="consent"><input type="checkbox" id="lgpd">Autorizo a Construcenter Urbanismo a falar comigo sobre o Barra Park (LGPD).</label>
-      <div class="err" id="e-lgpd"></div>
-      <button class="go" id="send" type="submit"><span id="send-t">Quero meu desconto</span><i><svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></i></button>
-      <div class="ok" id="ok" hidden><b>Cadastro recebido</b><span id="ok-msg">Um consultor vai te chamar no WhatsApp em instantes.</span></div>
-    </form>
+    <div class="fwrap"><div class="fshield"></div><div class="ftop"><i>1</i>Preencha e receba a simulação no WhatsApp</div><iframe id="fform" title="Cadastro Barra Park" src="https://construcenter.facilitavendas.com/v2/form-public/A29uc3RydWNlbnRlci0yNY" loading="eager" allow="clipboard-write"></iframe></div>
   </aside>
 </section>
 <div class="scrim" id="scrim"></div>
@@ -346,7 +343,7 @@ var CONFIG = {
   /* ===== cadastro: cartão no desktop, gaveta no celular ===== */
   var panel=$('cadastro'),scrim=$('scrim'),mcta=$('mcta');
   function isSheet(){return matchMedia('(max-width:1100px)').matches;}
-  function openForm(e){if(e)e.preventDefault();if(isSheet()){panel.classList.add('open');scrim.classList.add('open');mcta.classList.add('hide');}else{scrollTo({top:0,behavior:'smooth'});}setTimeout(function(){$('nome').focus({preventScroll:true});},450);}
+  function openForm(e){if(e)e.preventDefault();if(isSheet()){panel.classList.add('open');scrim.classList.add('open');mcta.classList.add('hide');}else{scrollTo({top:0,behavior:'smooth'});}if(window.fbq)fbq('track','Contact');}
   function closeForm(){panel.classList.remove('open');scrim.classList.remove('open');mcta.classList.remove('hide');}
   [].forEach.call(document.querySelectorAll('[data-open]'),function(b){b.addEventListener('click',openForm);});
   $('close').onclick=closeForm;scrim.onclick=closeForm;
@@ -355,37 +352,11 @@ var CONFIG = {
   var end=new Date('2026-12-31T23:59:59-03:00').getTime();
   $('days').textContent=Math.max(0,Math.ceil((end-Date.now())/86400000));
 
-  var tel=$('tel');
-  tel.addEventListener('input',function(){var d=tel.value.replace(/\D/g,'').slice(0,11);
-    tel.value=d.length>6?'('+d.slice(0,2)+') '+d.slice(2,d.length-4)+'-'+d.slice(-4):d.length>2?'('+d.slice(0,2)+') '+d.slice(2):d;});
-  ['nome','email','tel','lgpd'].forEach(function(id){$(id).addEventListener('input',function(){$('e-'+id).textContent='';});});
-  var params={};try{new URLSearchParams(location.search).forEach(function(v,k){if(/^utm_|fbclid/.test(k))params[k]=v;});}catch(e){}
-  $('Lead_Barra_Park').addEventListener('submit',function(e){
-    e.preventDefault();
-    var f={nome:$('nome').value.trim(),email:$('email').value.trim().toLowerCase(),telefone:'55'+tel.value.replace(/\D/g,''),empreendimento:'Barra Park Residence',cena:S[cur].n,site:$('site').value};
-    var bad=false;function err(id,m){$('e-'+id).textContent=m;bad=true;}
-    if(f.nome.split(' ').filter(Boolean).length<2)err('nome','Digite nome e sobrenome.');
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email))err('email','Digite um e-mail válido.');
-    if(f.telefone.length<12)err('tel','Digite o WhatsApp com DDD.');
-    if(!$('lgpd').checked)err('lgpd','Marque a autorização para podermos te chamar.');
-    if(bad)return;
-    f.origem='site-barra-park';f.data=new Date().toISOString();Object.assign(f,params);
-    var btn=$('send');btn.disabled=true;$('send-t').textContent='Enviando…';
-    function done(msg){[].forEach.call($('Lead_Barra_Park').querySelectorAll('.f,.consent,#send'),function(el){el.hidden=true;});if(msg)$('ok-msg').textContent=msg;$('ok').hidden=false;}
-    if(window.fbq)fbq('track','Lead',{content_name:'Barra Park Residence'});
-    if(!CONFIG.webhookUrl){setTimeout(function(){done();},700);return;}
-    var req=CONFIG.formato==='json'
-      ?fetch(CONFIG.webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(f)}).then(function(r){if(!r.ok)throw 0;})
-      :fetch(CONFIG.webhookUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(f).toString()});
-    req.then(function(){done();})
-      .catch(function(){btn.disabled=false;$('send-t').textContent='Quero meu desconto';$('e-lgpd').textContent='Não conseguimos enviar agora. Tente de novo em alguns segundos.';});
-  });
+  /* utm do anúncio vão junto para o formulário do Facilita */
+  try{var q=location.search;if(q){var fr=$('fform');fr.src=fr.src+(fr.src.indexOf('?')<0?'?':'&')+q.slice(1);}}catch(e){}
 })();
 </script>
 
 
-<!-- Facilita Form Tracker: captura o formulário #Lead_Barra_Park e envia ao CRM -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script type='text/javascript'>(function(){function loadScript(url,callback){var script=document.createElement('script');script.type='text/javascript',script.readyState?script.onreadystatechange=function(){(script.readyState=='loaded'||script.readyState=='complete')&&(script.onreadystatechange=null,callback());}:script.onload=function(){callback();},script.src=url,document.getElementsByTagName('head')[0].appendChild(script);}loadScript('https://cdn.appfacilita.com/static/plugins/jquery.form-tracker.min.js?v=1.5',function(){facilitaFormTrackerFnc({i:'construcenter'});});}());</script>
 </body>
 </html>
