@@ -110,9 +110,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .ok b{font-size:20px;font-weight:700;color:var(--gold)}
 .close{all:unset;cursor:pointer;width:34px;height:34px;border-radius:50%;display:none;place-items:center;border:1px solid var(--stroke)}
 .close svg{width:12px;height:12px;stroke:#fff;stroke-width:1.8}
-.fwrap{border-radius:14px;overflow:hidden;background:#fff;height:430px}
-.fwrap iframe{width:100%;height:100%;border:0;display:block}
-@media (max-width:1100px){.fwrap{height:min(520px,62svh)}}
+.panel{width:400px}
+.fwrap{position:relative;margin:4px -24px -24px;background:#fff;border-radius:0 0 22px 22px;overflow:hidden;height:470px}
+.fwrap::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--gold),#C9B814);z-index:2}
+.fwrap .ftop{position:relative;z-index:1;display:flex;align-items:center;gap:10px;padding:18px 24px 0;color:#1d1f0a;font-size:13px;font-weight:600}
+.fwrap .ftop i{width:22px;height:22px;border-radius:50%;background:#1d1f0a;color:var(--gold);display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:700;flex:none}
+.fwrap iframe{position:absolute;left:0;top:-38px;width:100%;height:620px;border:0;display:block}
+.fwrap .fshield{position:absolute;left:0;right:0;top:0;height:58px;background:#fff;z-index:1;pointer-events:none}
+.panel .fine{margin-top:-4px}
+@media (max-width:1100px){.panel{width:auto}.fwrap{margin:4px calc(-1*max(20px,env(safe-area-inset-left,0px))) 0;border-radius:0;height:500px}.panel .fine{margin-top:-4px}.fwrap{margin-bottom:calc(-1*max(22px,calc(env(safe-area-inset-bottom,0px) + 16px)))}}
 .fine{font-size:11px;color:rgba(255,255,255,.5);line-height:1.4}
 .scrim{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .4s}
 .mcta{display:none}
@@ -211,8 +217,8 @@ footer b{color:#E8E3CC;font-weight:600}
       <button class="close" id="close" type="button" aria-label="Fechar cadastro"><svg viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11"/></svg></button>
     </div>
     <div class="chips"><span class="chip">R$ 599/mês*</span><span class="chip">96x sem juros*</span><span class="chip">A partir de 160 m²</span></div>
-    <div class="fwrap"><iframe id="fform" title="Cadastro Barra Park" src="https://construcenter.facilitavendas.com/v2/form-public/A29uc3RydWNlbnRlci0yNY" loading="eager" allow="clipboard-write"></iframe></div>
     <div class="fine">*Correção anual pelo IPCA. Desconto válido até 31/12/2026. Imagens ilustrativas.</div>
+    <div class="fwrap"><div class="fshield"></div><div class="ftop"><i>1</i>Preencha e receba a simulação no WhatsApp</div><iframe id="fform" title="Cadastro Barra Park" src="https://construcenter.facilitavendas.com/v2/form-public/A29uc3RydWNlbnRlci0yNY" loading="eager" allow="clipboard-write"></iframe></div>
   </aside>
 </section>
 <div class="scrim" id="scrim"></div>
